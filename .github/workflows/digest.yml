@@ -1,0 +1,26 @@
+name: shumi-hakkutsu daily digest
+
+on:
+  schedule:
+    # 毎日 8:00 JST に実行 (= 前日 23:00 UTC)。GitHub Actions の cron は UTC 基準。
+    - cron: "0 23 * * *"
+  workflow_dispatch: {} # 手動実行（テスト用）
+
+jobs:
+  dig:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.4"
+          bundler-cache: true
+
+      - name: Run digest
+        env:
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          DISCORD_GUILD_ID: ${{ secrets.DISCORD_GUILD_ID }}
+          HOBBY_CHANNEL_ID: ${{ secrets.HOBBY_CHANNEL_ID }}
+          DIGEST_WEBHOOK_URL: ${{ secrets.DIGEST_WEBHOOK_URL }}
+        run: bundle exec ruby dig.rb
