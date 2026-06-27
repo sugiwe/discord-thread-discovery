@@ -4,5 +4,11 @@
     "thread_name": "映画",
     "tier": 1,
     "zero_post": false
+  },
+  "1519123838070427689": {
+    "last_introduced_at": "2026-06-27T23:20:46+00:00",
+    "thread_name": "音楽",
+    "tier": 2,
+    "zero_post": false
   }
 }
