@@ -6,9 +6,9 @@ require "time"
 
 # 紹介履歴の管理を担当するクラス
 class HistoryManager
-  def initialize(history_file:, cooldown_days: 7)
-    @history_file = history_file
-    @cooldown_days = cooldown_days
+  def initialize(history_file:, cooldown_days:)
+    @history_file = history_file      # 履歴ファイルのパス
+    @cooldown_days = cooldown_days    # クールダウン日数
   end
 
   # 履歴を読み込む
