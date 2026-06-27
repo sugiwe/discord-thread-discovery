@@ -1,6 +1,6 @@
-# shumi-hakkutsu 🎮📚🎸
+# discord-thread-discovery 🎮📚🎸
 
-趣味フォーラムから毎朝スレッドを発掘して紹介するDiscord BOT。
+任意のフォーラムから設定した頻度でスレッドを発掘して紹介するDiscord BOTです。
 GitHub Actionsで動作し、サーバー不要・完全無料で運用できます。
 
 ## 特徴
@@ -43,52 +43,97 @@ state/
 
 ## セットアップ
 
-### 1. Discord BOTを作成
+### A. Discord管理人が行うこと
 
-1. [Discord Developer Portal](https://discord.com/developers/applications) で **New Application**
-2. 左メニュー **Bot** → **Reset Token** でトークンを取得 → `DISCORD_BOT_TOKEN`
-3. 同じBot画面で **MESSAGE CONTENT INTENT** を **ON** にする
-   - スニペット（メッセージ本文）取得に必須
-   - 100サーバー未満なら自己申告トグルのみでOK
+Discordサーバーの管理権限を持つ人が行う作業です。
 
-### 2. BOTをサーバーに招待
+#### 1. BOT用のフォーラムチャンネルを用意
 
-OAuth2 → URL Generator:
-- **Scopes**: `bot`
-- **Permissions**: `View Channels` + `Read Message History`（合計: 66560）
+発掘対象のフォーラムチャンネルを決めます（既存フォーラムでもOK）。
 
-または以下のURLの `CLIENT_ID` を自分のBOTのIDに置き換えてアクセス：
+#### 2. 投稿先チャンネルにWebhookを作成
 
-```
-https://discord.com/api/oauth2/authorize?client_id=CLIENT_ID&scope=bot&permissions=66560
-```
+分報チャンネル（投稿先）で：
 
-フォーラムチャンネルが非公開の場合、BOTのロールに閲覧権限があることを確認してください。
+編集 → 連携サービス → ウェブフック → 新しいウェブフック → **URLをコピー**
 
-### 3. IDを取得
+このURLを `DIGEST_WEBHOOK_URL` として後で導入者に共有します。
+Webhookの名前やアイコンはここで自由に設定できます。
+
+#### 3. BOTを招待
+
+導入者から提供されるOAuth URLでBOTをサーバーに招待します。
+
+フォーラムチャンネルが非公開の場合、BOTのロールに閲覧権限を付与してください。
+
+#### 4. チャンネルIDを取得して導入者に共有
 
 Discord設定 → 詳細設定 → **開発者モード** を ON
 
 - サーバー名を右クリック → IDをコピー → `DISCORD_GUILD_ID`
 - 趣味フォーラムを右クリック → IDをコピー → `HOBBY_CHANNEL_ID`
 
-### 4. Webhookを作成
+この2つのIDと、手順2で作成したWebhook URLを導入者に共有してください。
 
-分報チャンネル（投稿先）で：
-編集 → 連携サービス → ウェブフック → 新しいウェブフック → **URLをコピー** → `DIGEST_WEBHOOK_URL`
+---
 
-名前やアイコンはここで自由に設定できます。
+### B. BOT導入者が行うこと
 
-### 5. GitHub Secretsに登録
+GitHubリポジトリとDiscord BOTアプリケーションを管理する人が行う作業です。
 
-リポジトリ → Settings → Secrets and variables → Actions → **New repository secret**
+#### 1. このリポジトリをフォーク
 
-| Secret名 | 値 |
-|---|---|
-| `DISCORD_BOT_TOKEN` | BOTトークン |
-| `DISCORD_GUILD_ID` | サーバーID |
-| `HOBBY_CHANNEL_ID` | 趣味フォーラムID |
-| `DIGEST_WEBHOOK_URL` | Webhook URL |
+自分のGitHubアカウントにこのリポジトリをフォークします。
+
+#### 2. Discord BOTアプリケーションを作成
+
+1. [Discord Developer Portal](https://discord.com/developers/applications) で **New Application**
+2. 左メニュー **Bot** → **Reset Token** でトークンを取得（後で使用）
+3. 同じBot画面で **MESSAGE CONTENT INTENT** を **ON** にする
+   - スニペット（メッセージ本文）取得に必須
+   - 100サーバー未満なら自己申告トグルのみでOK
+
+#### 3. BOT招待URLを生成してDiscord管理人に共有
+
+OAuth2 → URL Generator:
+
+- **Scopes**: `bot`
+- **Permissions**: `View Channels` + `Read Message History`（合計: 66560）
+
+または以下のURLの `CLIENT_ID` を自分のBOTのClient IDに置き換えて管理人に共有：
+
+```
+https://discord.com/api/oauth2/authorize?client_id=CLIENT_ID&scope=bot&permissions=66560
+```
+
+#### 4. Discord管理人から情報を受け取る
+
+管理人から以下の3つを受け取ります：
+
+- `DISCORD_GUILD_ID`（サーバーID）
+- `HOBBY_CHANNEL_ID`（フォーラムチャンネルID）
+- `DIGEST_WEBHOOK_URL`（Webhook URL）
+
+#### 5. GitHub Secretsに登録
+
+フォークしたリポジトリ → Settings → Secrets and variables → Actions → **New repository secret**
+
+| Secret名             | 値                   | 取得元     |
+| -------------------- | -------------------- | ---------- |
+| `DISCORD_BOT_TOKEN`  | BOTトークン          | 手順2      |
+| `DISCORD_GUILD_ID`   | サーバーID           | 管理人から |
+| `HOBBY_CHANNEL_ID`   | 趣味フォーラムID     | 管理人から |
+| `DIGEST_WEBHOOK_URL` | Webhook URL          | 管理人から |
+
+#### 6. 動作確認
+
+GitHub → Actions → `shumi-hakkutsu daily digest` → **Run workflow** で手動実行してテストします。
+
+---
+
+### C. 一人で両方やる場合
+
+Discord管理人と導入者が同一人物の場合は、A・B両方の手順を順番に実施してください。
 
 ## 使い方
 
@@ -115,14 +160,20 @@ bundle exec ruby dig.rb
 
 ### 投稿時刻を変更
 
-[`.github/workflows/digest.yml`](.github/workflows/digest.yml#L6):
+[`.github/workflows/digest.yml`](.github/workflows/digest.yml) のcron設定を編集します。
+
+GitHub ActionsのcronはUTC基準なので、JST時刻から9時間引いた値を設定してください。
+ファイル内のコメントにJST↔UTC対応表があります。
+
 ```yaml
-- cron: "0 23 * * *"  # 23:00 UTC = 8:00 JST翌日
+# 例: JST 12:00に実行したい場合
+- cron: "0 3 * * *" # 12 - 9 = 3 (UTC)
 ```
 
 ### クールダウン期間を変更
 
 [`dig.rb`](dig.rb#L22):
+
 ```ruby
 COOLDOWN_DAYS = 7  # デフォルト7日
 ```
@@ -130,6 +181,7 @@ COOLDOWN_DAYS = 7  # デフォルト7日
 ### スニペット長を変更
 
 [`lib/message_formatter.rb`](lib/message_formatter.rb#L5):
+
 ```ruby
 SNIPPET_MAX = 120  # デフォルト120文字
 ```
@@ -137,6 +189,7 @@ SNIPPET_MAX = 120  # デフォルト120文字
 ### メッセージテンプレートを変更
 
 [`lib/message_formatter.rb`](lib/message_formatter.rb) の各メソッド：
+
 - `format_normal_message` - 通常スレッド用
 - `format_zero_post_message` - 投稿ゼロスレッド用
 - `all_introduced_message` - 全滅時用

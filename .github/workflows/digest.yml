@@ -2,7 +2,13 @@ name: shumi-hakkutsu daily digest
 
 on:
   schedule:
-    # 毎日 8:00 JST に実行 (= 前日 23:00 UTC)。GitHub Actions の cron は UTC 基準。
+    # GitHub Actions の cron は UTC 基準。JST時刻から9時間引いた値を設定する。
+    # JST 06:00 → UTC 21:00 (前日) → "0 21 * * *"
+    # JST 07:00 → UTC 22:00 (前日) → "0 22 * * *"
+    # JST 08:00 → UTC 23:00 (前日) → "0 23 * * *"  ← デフォルト
+    # JST 09:00 → UTC 00:00 (当日) → "0 0 * * *"
+    # JST 10:00 → UTC 01:00 (当日) → "0 1 * * *"
+    # JST 12:00 → UTC 03:00 (当日) → "0 3 * * *"
     - cron: "0 23 * * *"
   workflow_dispatch: {} # 手動実行（テスト用）
 
