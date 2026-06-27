@@ -7,107 +7,88 @@ rescue LoadError
   # 本番(Actions)では dotenv は無くてよい
 end
 
-require "json"
-require "net/http"
-require "uri"
+require_relative "lib/discord_client"
+require_relative "lib/history_manager"
+require_relative "lib/thread_selector"
+require_relative "lib/message_formatter"
 
-API_BASE = "https://discord.com/api/v10"
-
+# 環境変数
 BOT_TOKEN        = ENV.fetch("DISCORD_BOT_TOKEN")
 GUILD_ID         = ENV.fetch("DISCORD_GUILD_ID")
 HOBBY_CHANNEL_ID = ENV.fetch("HOBBY_CHANNEL_ID")
 WEBHOOK_URL      = ENV.fetch("DIGEST_WEBHOOK_URL")
 
-SNIPPET_MAX = 120
-
-# 429(レート制限)を最低限ケアした GET ヘルパー
-def get_json(path)
-  3.times do
-    uri = URI("#{API_BASE}#{path}")
-    http = Net::HTTP.new(uri.host, uri.port)
-    http.use_ssl = true
-
-    request = Net::HTTP::Get.new(uri)
-    request["Authorization"] = "Bot #{BOT_TOKEN}"
-    request["User-Agent"] = "shumi-hakkutsu/0.1"
-    request["Cache-Control"] = "no-cache"
-
-    response = http.request(request)
-    return JSON.parse(response.body) if response.code == "200"
-
-    if response.code == "429"
-      wait = ((JSON.parse(response.body)["retry_after"] rescue 1).to_f) + 0.5
-      warn "rate limited: retrying in #{wait}s"
-      sleep wait
-      next
-    end
-
-    raise "Discord API error #{response.code}: #{response.body}"
-  end
-  raise "rate limited too many times: #{path}"
-end
-
-# 「趣味」チャンネル配下のアクティブ(非アーカイブ)スレッド一覧
-def hobby_threads
-  # キャッシュバスティング用にタイムスタンプを追加
-  get_json("/guilds/#{GUILD_ID}/threads/active?_=#{Time.now.to_i}")
-    .fetch("threads")
-    .select { |t| t["parent_id"] == HOBBY_CHANNEL_ID }
-end
-
-# スレッドの最新メッセージ1件（スニペット用）
-def latest_message(thread_id)
-  get_json("/channels/#{thread_id}/messages?limit=1").first
-end
-
-def snippet(message)
-  return "(本文なし)" unless message
-
-  content = message["content"].to_s.strip
-  return "(画像・添付のみ)" if content.empty?
-
-  oneline = content.gsub(/\s+/, " ")
-  oneline.length > SNIPPET_MAX ? "#{oneline[0, SNIPPET_MAX]}…" : oneline
-end
-
-def thread_link(thread_id)
-  "https://discord.com/channels/#{GUILD_ID}/#{thread_id}"
-end
-
-def post_to_webhook(content)
-  # allowed_mentions を空にして、スニペット内の @mention で誤爆通知しないようにする
-  payload = { content: content, allowed_mentions: { parse: [] } }
-
-  uri = URI(WEBHOOK_URL)
-  http = Net::HTTP.new(uri.host, uri.port)
-  http.use_ssl = true
-
-  request = Net::HTTP::Post.new(uri)
-  request["Content-Type"] = "application/json"
-  request.body = payload.to_json
-
-  response = http.request(request)
-  raise "Webhook post failed #{response.code}: #{response.body}" unless response.code.to_i.between?(200, 299)
-end
+HISTORY_FILE = "state/history.json"
+COOLDOWN_DAYS = 7
 
 def main
-  threads = hobby_threads
+  # 各クラスのインスタンスを生成
+  discord_client = DiscordClient.new(
+    bot_token: BOT_TOKEN,
+    guild_id: GUILD_ID,
+    channel_id: HOBBY_CHANNEL_ID,
+    webhook_url: WEBHOOK_URL
+  )
+
+  history_manager = HistoryManager.new(
+    history_file: HISTORY_FILE,
+    cooldown_days: COOLDOWN_DAYS
+  )
+
+  thread_selector = ThreadSelector.new(
+    history_manager: history_manager,
+    guild_id: GUILD_ID,
+    channel_id: HOBBY_CHANNEL_ID
+  )
+
+  message_formatter = MessageFormatter.new(
+    discord_client: discord_client,
+    thread_selector: thread_selector
+  )
+
+  # スレッド一覧を取得
+  threads = discord_client.fetch_all_threads
   if threads.empty?
-    puts "アクティブなスレッドが見つかりませんでした。投稿をスキップします。"
+    puts "スレッドが見つかりませんでした。投稿をスキップします。"
     return
   end
 
-  pick = threads.sample
-  body = <<~MD.strip
-    🎲 **趣味発掘** — きょうのスレッド
+  # 履歴を読み込み、スレッドを選択
+  history = history_manager.load
+  result = thread_selector.select(threads, history)
 
-    **#{pick["name"]}**
-    > #{snippet(latest_message(pick["id"]))}
-    #{thread_link(pick["id"])}
-  MD
+  # 全滅時
+  if result[:tier] == 5
+    discord_client.post_to_webhook(message_formatter.all_introduced_message)
+    puts "全て紹介済みのため、全滅メッセージを投稿しました。"
+    return
+  end
 
-  post_to_webhook(body)
-  puts "投稿しました: #{pick["name"]}"
+  # メッセージを生成して投稿
+  selected = result[:thread]
+  message = message_formatter.format(selected, zero_post: result[:zero_post])
+  discord_client.post_to_webhook(message)
+
+  # 履歴を更新して保存
+  history_manager.record(
+    history,
+    thread_id: selected["id"],
+    thread_name: selected["name"],
+    tier: result[:tier],
+    zero_post: result[:zero_post]
+  )
+  history_manager.save(history)
+
+  # Gitコミット&プッシュ（GitHub Actionsで実行時のみ）
+  if ENV["GITHUB_ACTIONS"] == "true"
+    system("git config --global user.email 'actions@github.com'")
+    system("git config --global user.name 'GitHub Actions'")
+    system("git add #{HISTORY_FILE}")
+    system("git commit -m 'Update history: #{selected["name"]}'")
+    system("git push")
+  end
+
+  puts "投稿しました: #{selected["name"]} (第#{result[:tier]}候補#{result[:zero_post] ? "・投稿ゼロ" : ""})"
 end
 
-main
+main if __FILE__ == $PROGRAM_NAME
