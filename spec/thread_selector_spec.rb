@@ -40,7 +40,7 @@ RSpec.describe ThreadSelector do
   end
 
   describe "#select" do
-    let(:now) { Time.now }
+    let(:now) { Time.utc(2025, 1, 1, 12, 0, 0) }
 
     before do
       allow(Time).to receive(:now).and_return(now)
@@ -72,9 +72,6 @@ RSpec.describe ThreadSelector do
             "thread_name" => "スレッド1"
           }
         }
-
-        # cooldown_passed? が false を返すようにモック
-        allow(history_manager).to receive(:cooldown_passed?).and_return(false)
 
         result = selector.select(threads, history)
 
