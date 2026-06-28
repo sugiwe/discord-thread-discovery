@@ -10,5 +10,11 @@
     "thread_name": "音楽",
     "tier": 2,
     "zero_post": false
+  },
+  "1519123605940732077": {
+    "last_introduced_at": "2026-06-28T23:21:46+00:00",
+    "thread_name": "漫画",
+    "tier": 2,
+    "zero_post": false
   }
 }
