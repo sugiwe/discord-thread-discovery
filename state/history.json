@@ -16,5 +16,11 @@
     "thread_name": "漫画",
     "tier": 2,
     "zero_post": false
+  },
+  "1520187024223768657": {
+    "last_introduced_at": "2026-06-29T23:20:33+00:00",
+    "thread_name": "非アクティブ確認用2",
+    "tier": 2,
+    "zero_post": false
   }
 }
