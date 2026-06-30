@@ -22,5 +22,11 @@
     "thread_name": "非アクティブ確認用2",
     "tier": 2,
     "zero_post": false
+  },
+  "1520046221245288499": {
+    "last_introduced_at": "2026-06-30T23:26:04+00:00",
+    "thread_name": "非アクティブ確認用",
+    "tier": 2,
+    "zero_post": false
   }
 }
