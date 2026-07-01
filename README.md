@@ -71,7 +71,7 @@ Webhookの名前やアイコンはここで自由に設定できます。
 Discord設定 → 詳細設定 → **開発者モード** を ON
 
 - サーバー名を右クリック → IDをコピー → `DISCORD_GUILD_ID`
-- 投稿の取得をしたいフォーラムを右クリック → IDをコピー → `HOBBY_CHANNEL_ID`
+- 投稿の取得をしたいフォーラムを右クリック → IDをコピー → `FORUM_CHANNEL_ID`
 
 この2つのIDと、手順2で作成したWebhook URLを導入者に共有してください。
 
@@ -111,7 +111,7 @@ https://discord.com/api/oauth2/authorize?client_id=CLIENT_ID&scope=bot&permissio
 管理人から以下の3つを受け取ります：
 
 - `DISCORD_GUILD_ID`（サーバーID）
-- `HOBBY_CHANNEL_ID`（フォーラムチャンネルID）
+- `FORUM_CHANNEL_ID`（フォーラムチャンネルID）
 - `DIGEST_WEBHOOK_URL`（Webhook URL）
 
 #### 5. GitHub Secretsに登録
@@ -122,7 +122,7 @@ https://discord.com/api/oauth2/authorize?client_id=CLIENT_ID&scope=bot&permissio
 | -------------------- | ---------------------- | ---------- |
 | `DISCORD_BOT_TOKEN`  | BOTトークン            | 手順2      |
 | `DISCORD_GUILD_ID`   | サーバーID             | 管理人から |
-| `HOBBY_CHANNEL_ID`   | フォーラムチャンネルID | 管理人から |
+| `FORUM_CHANNEL_ID`   | フォーラムチャンネルID | 管理人から |
 | `DIGEST_WEBHOOK_URL` | Webhook URL            | 管理人から |
 
 #### 6. 動作確認

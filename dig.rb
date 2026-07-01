@@ -15,7 +15,7 @@ require_relative "lib/message_formatter"
 # 環境変数
 BOT_TOKEN        = ENV.fetch("DISCORD_BOT_TOKEN")
 GUILD_ID         = ENV.fetch("DISCORD_GUILD_ID")
-HOBBY_CHANNEL_ID = ENV.fetch("HOBBY_CHANNEL_ID")
+FORUM_CHANNEL_ID = ENV.fetch("FORUM_CHANNEL_ID")
 WEBHOOK_URL      = ENV.fetch("DIGEST_WEBHOOK_URL")
 
 HISTORY_FILE = "state/history.json"
@@ -26,7 +26,7 @@ def main
   my_discord_client = DiscordClient.new(
     bot_token: BOT_TOKEN,
     guild_id: GUILD_ID,
-    channel_id: HOBBY_CHANNEL_ID,
+    channel_id: FORUM_CHANNEL_ID,
     webhook_url: WEBHOOK_URL
   )
 
@@ -38,7 +38,7 @@ def main
   my_thread_selector = ThreadSelector.new(
     history_manager: my_history_manager,
     guild_id: GUILD_ID,
-    channel_id: HOBBY_CHANNEL_ID
+    channel_id: FORUM_CHANNEL_ID
   )
 
   my_message_formatter = MessageFormatter.new(
