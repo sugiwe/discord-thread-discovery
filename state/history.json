@@ -10,5 +10,11 @@
     "thread_name": "映画",
     "tier": 1,
     "zero_post": false
+  },
+  "1518797517972701305": {
+    "last_introduced_at": "2026-07-03T23:56:32+00:00",
+    "thread_name": "食べ物",
+    "tier": 2,
+    "zero_post": false
   }
 }
