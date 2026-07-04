@@ -16,5 +16,11 @@
     "thread_name": "食べ物",
     "tier": 2,
     "zero_post": false
+  },
+  "1115735159761809498": {
+    "last_introduced_at": "2026-07-04T23:52:55+00:00",
+    "thread_name": "生活",
+    "tier": 1,
+    "zero_post": false
   }
 }
