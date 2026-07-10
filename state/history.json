@@ -52,5 +52,11 @@
     "thread_name": "お酒",
     "tier": 1,
     "zero_post": false
+  },
+  "1115735390297538560": {
+    "last_introduced_at": "2026-07-10T23:47:29+00:00",
+    "thread_name": "音楽",
+    "tier": 2,
+    "zero_post": false
   }
 }
