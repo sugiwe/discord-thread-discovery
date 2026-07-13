@@ -70,5 +70,11 @@
     "thread_name": "アニメ",
     "tier": 2,
     "zero_post": false
+  },
+  "1115736001453756536": {
+    "last_introduced_at": "2026-07-13T23:42:32+00:00",
+    "thread_name": "育児",
+    "tier": 1,
+    "zero_post": false
   }
 }
