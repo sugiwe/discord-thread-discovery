@@ -76,5 +76,11 @@
     "thread_name": "育児",
     "tier": 1,
     "zero_post": false
+  },
+  "1115736266735112332": {
+    "last_introduced_at": "2026-07-14T23:41:42+00:00",
+    "thread_name": "手芸",
+    "tier": 3,
+    "zero_post": true
   }
 }
