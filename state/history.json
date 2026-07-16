@@ -88,5 +88,11 @@
     "thread_name": "九州",
     "tier": 3,
     "zero_post": true
+  },
+  "1115734385174528000": {
+    "last_introduced_at": "2026-07-16T23:48:47+00:00",
+    "thread_name": "OSS",
+    "tier": 3,
+    "zero_post": true
   }
 }
