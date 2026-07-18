@@ -100,5 +100,11 @@
     "thread_name": "島根",
     "tier": 3,
     "zero_post": true
+  },
+  "1115736238369034240": {
+    "last_introduced_at": "2026-07-18T23:41:58+00:00",
+    "thread_name": "将棋",
+    "tier": 3,
+    "zero_post": true
   }
 }
