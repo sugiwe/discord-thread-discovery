@@ -104,8 +104,8 @@ RSpec.describe ThreadSelector do
       end
     end
 
-    context "第4候補: クールダウンが経過したスレッドがある場合" do
-      it "tier 4 を返す" do
+    context "第3候補（拡張）: クールダウンが経過したスレッドがある場合" do
+      it "tier 3 で再紹介スレッドを返す" do
         threads = [
           {
             "id" => "4",
@@ -126,7 +126,7 @@ RSpec.describe ThreadSelector do
 
         result = selector.select(threads, history)
 
-        expect(result[:tier]).to eq(4)
+        expect(result[:tier]).to eq(3)
         expect(result[:thread]["name"]).to eq("再紹介スレッド")
       end
     end

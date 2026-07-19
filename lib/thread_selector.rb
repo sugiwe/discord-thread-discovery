@@ -10,7 +10,7 @@ class ThreadSelector
     @channel_id = channel_id
   end
 
-  # 4層選択ロジックでスレッドを選択
+  # 3層選択ロジックでスレッドを選択
   def select(threads, history)
     now = Time.now
 
@@ -34,21 +34,20 @@ class ThreadSelector
     end
     return build_result(tier2.sample, 2, false) if tier2.any?
 
-    # 第3候補: 投稿ゼロで未紹介のスレッド
-    tier3 = threads.select do |t|
+    # 第3候補: 投稿ゼロで未紹介のスレッド + 最後の紹介から7日以上経過したスレッド
+    tier3_zero_post = threads.select do |t|
       zero_post_thread?(t) && !history[t["id"]]
     end
-    return build_result(tier3.sample, 3, true) if tier3.any?
 
-    # 第4候補: 最後の紹介から7日以上経過したスレッド（再紹介OK）
-    tier4 = threads.select do |t|
+    tier3_cooldown = threads.select do |t|
       next unless history[t["id"]]
       @history_manager.cooldown_passed?(history[t["id"]]["last_introduced_at"])
     end
 
-    if tier4.any?
-      selected = tier4.sample
-      return build_result(selected, 4, zero_post_thread?(selected))
+    tier3_combined = tier3_zero_post + tier3_cooldown
+    if tier3_combined.any?
+      selected = tier3_combined.sample
+      return build_result(selected, 3, zero_post_thread?(selected))
     end
 
     # 全滅
