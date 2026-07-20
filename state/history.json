@@ -106,5 +106,11 @@
     "thread_name": "将棋",
     "tier": 3,
     "zero_post": true
+  },
+  "1115736311161163827": {
+    "last_introduced_at": "2026-07-20T23:46:22+00:00",
+    "thread_name": "北海道",
+    "tier": 3,
+    "zero_post": true
   }
 }
