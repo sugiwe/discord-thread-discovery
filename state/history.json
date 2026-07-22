@@ -112,5 +112,11 @@
     "thread_name": "北海道",
     "tier": 3,
     "zero_post": true
+  },
+  "1115733855656214578": {
+    "last_introduced_at": "2026-07-22T23:54:27+00:00",
+    "thread_name": "勉強会情報",
+    "tier": 1,
+    "zero_post": false
   }
 }
