@@ -118,5 +118,11 @@
     "thread_name": "勉強会情報",
     "tier": 1,
     "zero_post": false
+  },
+  "1115736453939466242": {
+    "last_introduced_at": "2026-07-24T23:55:10+00:00",
+    "thread_name": "中国・四国",
+    "tier": 3,
+    "zero_post": true
   }
 }
