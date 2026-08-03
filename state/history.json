@@ -148,5 +148,11 @@
     "thread_name": "ChatGPT",
     "tier": 3,
     "zero_post": true
+  },
+  "1115736134937497650": {
+    "last_introduced_at": "2026-08-03T23:59:18+00:00",
+    "thread_name": "ダイエット",
+    "tier": 3,
+    "zero_post": true
   }
 }
