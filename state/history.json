@@ -160,5 +160,11 @@
     "thread_name": "rubymine",
     "tier": 3,
     "zero_post": true
+  },
+  "1115735097291837563": {
+    "last_introduced_at": "2026-08-07T23:24:01+00:00",
+    "thread_name": "本（技術書以外）📕",
+    "tier": 3,
+    "zero_post": true
   }
 }
