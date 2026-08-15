@@ -166,5 +166,11 @@
     "thread_name": "本（技術書以外）📕",
     "tier": 3,
     "zero_post": true
+  },
+  "1115734523834028164": {
+    "last_introduced_at": "2026-08-15T23:10:41+00:00",
+    "thread_name": "競プロ",
+    "tier": 3,
+    "zero_post": true
   }
 }
