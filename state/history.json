@@ -178,5 +178,11 @@
     "thread_name": "関西",
     "tier": 3,
     "zero_post": true
+  },
+  "1115736060710883480": {
+    "last_introduced_at": "2026-08-21T23:14:02+00:00",
+    "thread_name": "お金",
+    "tier": 3,
+    "zero_post": true
   }
 }
