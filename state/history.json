@@ -196,5 +196,11 @@
     "thread_name": "グルメ",
     "tier": 3,
     "zero_post": true
+  },
+  "1115734433526456360": {
+    "last_introduced_at": "2026-09-14T00:31:41+00:00",
+    "thread_name": "お役立ち動画",
+    "tier": 3,
+    "zero_post": true
   }
 }
