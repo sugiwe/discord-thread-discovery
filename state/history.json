@@ -202,5 +202,11 @@
     "thread_name": "お役立ち動画",
     "tier": 3,
     "zero_post": true
+  },
+  "1115736095024484432": {
+    "last_introduced_at": "2026-09-26T01:02:59+00:00",
+    "thread_name": "キーボード",
+    "tier": 1,
+    "zero_post": false
   }
 }
